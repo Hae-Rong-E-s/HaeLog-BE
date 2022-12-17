@@ -16,7 +16,7 @@ public class SuccessResponse {
     }
 
     //header 상태코드 : httpStatus / body {result: success , msg: msg, data: data}
-    public ResponseEntity<ResponseDto> respond(HttpStatus httpStatus, String msg, Object data){
+    public ResponseEntity<ResponseDto> makeResponseEntity(HttpStatus httpStatus, String msg, Object data){
         ResponseDto responseBody = buildResponseDto("success", msg, data);
         return new ResponseEntity<>(responseBody, httpStatus);
     }
