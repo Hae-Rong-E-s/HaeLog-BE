@@ -15,15 +15,9 @@ public class SuccessResponse {
                 .build();
     }
 
-    //header 상태코드 : httpStatus / body "httpStatus": httpStatus, "msg": message, "data": data
-    public ResponseEntity<ResponseDto> respond(HttpStatus httpStatus, String message, Object data){
-        ResponseDto responseBody = buildResponseDto("success", message, data);
+    //header 상태코드 : httpStatus / body {result: success , msg: msg, data: data}
+    public ResponseEntity<ResponseDto> respond(HttpStatus httpStatus, String msg, Object data){
+        ResponseDto responseBody = buildResponseDto("success", msg, data);
         return new ResponseEntity<>(responseBody, httpStatus);
-    }
-
-
-    //header 상태코드 : httpStatus / body "data": data
-    public ResponseEntity<Object> respondDataOnly(HttpStatus httpStatus, Object data){
-        return new ResponseEntity<>(data, httpStatus);
     }
 }
