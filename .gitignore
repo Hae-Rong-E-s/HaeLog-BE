@@ -25,6 +25,7 @@ hs_err_pid*
 # add
 build
 gradle
+gradlew.bat
 gradlew
 HELP.md
 .gradle
