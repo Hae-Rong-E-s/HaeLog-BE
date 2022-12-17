@@ -3,6 +3,7 @@ package com.example.haelogproject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@EnableJpaAuditing
 @SpringBootApplication
 public class HaelogprojectApplication {
 
