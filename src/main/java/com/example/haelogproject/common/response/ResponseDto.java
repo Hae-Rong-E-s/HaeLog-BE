@@ -1,22 +1,22 @@
 package com.example.haelogproject.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseDto {
+public class ResponseDto<T> {
     private final String result;
     private final String msg;
-    private final Object data;
+    private final T data;
 
-    @Builder
-    public ResponseDto(String result, String msg, Object data){
+    public ResponseDto(String result, String msg, T data){
         this.result = result;
         this.msg = msg;
         this.data = data;
     }
+
+    //정적 팩토리 메소드 추가 예정
 }
