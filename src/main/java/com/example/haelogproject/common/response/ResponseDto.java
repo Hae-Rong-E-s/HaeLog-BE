@@ -1,7 +1,6 @@
 package com.example.haelogproject.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 import lombok.Getter;
 
 
