@@ -3,7 +3,6 @@ package com.example.haelogproject.common.jwt;
 import com.example.haelogproject.common.jwt.exception.CustomSecurityException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,20 +22,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException, CustomSecurityException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, CustomSecurityException {
         // Filter가 적용되고 있는 uri 추출
         String uri = request.getRequestURI();
         String method = request.getMethod();
 
-        // Login, SignUp, Music 전체 조회 API의 경우 해당 Filter 건너뜀.
-        if (uri.equals("/api/login") || uri.equals("/api/signup")){
+        // Login, SignUp, checkLoginId, checkNickname 전체 조회 API의 경우 해당 Filter 건너뜀.
+        if (uri.equals("/api/member/login")
+                || uri.equals("/api/member/signup")
+                || uri.equals("/api/member/signup/loginid")
+                || uri.equals("/api/member/signup/nickname")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Music 조회 관련 API 일때 해당 Filter 건너뜀
-        if (uri.contains("/music") && method.equals("GET")){
+        if (uri.contains("/music") && method.equals("GET")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,11 +47,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // 2. Token 유효성 검사 및 인증
         // 2-1. Token 존재 여부 확인
-        if(token == null) {
+        if (token == null) {
             throw new CustomSecurityException(TOKEN_NOT_FOUND_MSG);
         }
         // 2-2. Token 유효성 확인
-        if(!jwtUtil.validateAccessToken(token, request, response)){
+        if (!jwtUtil.validateAccessToken(token, request, response)) {
             throw new CustomSecurityException(INVALID_TOKEN_MSG);
         }
         // 3. 사용자 인증
@@ -58,8 +59,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         setAuthentication(info.getSubject());
 
         // 4. 다음 필터로 보냄
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
+
     // 인증/인가 설정
     private void setAuthentication(String loginId) {
         // 1. Security Context 생성

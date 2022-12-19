@@ -4,13 +4,10 @@ import com.example.haelogproject.common.jwt.JwtAuthFilter;
 import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.common.jwt.exception.JwtExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +24,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
+
     @Bean // 비밀번호 암호화
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,8 +49,10 @@ public class WebSecurityConfig {
         http.authorizeRequests().
                 // 3-1. Authentication 예외 처리
                 // 3-1-1. SignUp, Login API 인증 예외 처리
-                        antMatchers("/api/signup").permitAll().
-                antMatchers("/api/login").permitAll().
+                antMatchers("/api/member/signup").permitAll().
+                antMatchers("/api/member/login").permitAll().
+                antMatchers("/api/member/signup/loginid").permitAll().
+                antMatchers("/api/member/signup/nickname").permitAll().
                 anyRequest().authenticated();
 
         // 4. Filter 등록
@@ -72,7 +72,7 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("http://localhost:3000");
         //나중에 프론트 서버 origin으로 변경해야함
 //            configuration.addAllowedOrigin("http://soribaddah.s3-website.ap-northeast-2.amazonaws.com");
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH","DELETE")); // 허용할 Http Method
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 허용할 Http Method
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true); // 내 서버가 응답할 때 json을 js에서 처리할 수 있게 설정
         configuration.setMaxAge(3600L);
