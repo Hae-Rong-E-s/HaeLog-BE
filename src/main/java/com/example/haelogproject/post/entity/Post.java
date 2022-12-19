@@ -4,6 +4,7 @@ import com.example.haelogproject.comment.entity.Comment;
 import javax.persistence.*;
 
 import com.example.haelogproject.common.TimeStamp;
+import com.example.haelogproject.post.dto.PostRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,8 @@ public class Post extends TimeStamp {
     @Column(length = 150, nullable = true)
     private String contentSummary;
 
+
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Comment> commentList = new ArrayList<>();
 
@@ -42,4 +45,10 @@ public class Post extends TimeStamp {
         this.contentSummary = contentSummary;
     }
 
+
+    public void update(String title, String content) {
+
+        this.title = title;
+        this.content = content;
+    }
 }
