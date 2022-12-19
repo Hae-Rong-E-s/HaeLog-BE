@@ -1,4 +1,11 @@
 package com.example.haelogproject.common.jwt.exception;
 
-public class CustomSecurityException {
+import com.example.haelogproject.common.exception.ExceptionMessage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class CustomSecurityException extends RuntimeException{
+    private final ExceptionMessage exceptionMessage;
 }

@@ -1,5 +1,6 @@
 package com.example.haelogproject.common.response;
 
+import com.example.haelogproject.common.exception.ExceptionMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
@@ -15,6 +16,12 @@ public class ResponseDto<T> {
         this.result = result;
         this.msg = msg;
         this.data = data;
+    }
+
+    public ResponseDto(ExceptionMessage exceptionMessage){
+        this.result = "fail";
+        this.msg = exceptionMessage.getMsg();
+        this.data = null;
     }
 
     //정적 팩토리 메소드 추가 예정

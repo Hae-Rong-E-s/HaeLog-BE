@@ -39,10 +39,6 @@ public class UserDetailsImpl implements UserDetails {
         return this.loginId;
     }
 
-    public String getLoginId() {
-        return this.loginId;
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return false;

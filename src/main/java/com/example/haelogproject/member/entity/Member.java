@@ -28,12 +28,23 @@ public class Member extends TimeStamp {
     @Column(nullable = true)
     private String description;
 
+    @Column
+    private String accessToken;
+
+    @Column
+    private String refreshToken;
+
     @Builder
     public Member(String loginId, String password, String nickname, String description){
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.description = description;
+    }
+
+    public void updateToken(String accessToken, String refreshToken){
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
 }
