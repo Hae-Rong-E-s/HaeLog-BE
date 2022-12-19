@@ -53,9 +53,6 @@ public class WebSecurityConfig {
                 // 3-1-1. SignUp, Login API 인증 예외 처리
                         antMatchers("/api/signup").permitAll().
                 antMatchers("/api/login").permitAll().
-                // 3-1-2. music 조회 관련 API 예외 처리
-                        antMatchers(HttpMethod.GET, "/api/music").permitAll().
-                antMatchers(HttpMethod.GET, "/api/music/**").permitAll().
                 anyRequest().authenticated();
 
         // 4. Filter 등록
