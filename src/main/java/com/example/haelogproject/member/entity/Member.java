@@ -1,17 +1,16 @@
 package com.example.haelogproject.member.entity;
 
-import javax.persistence.*;
-
 import com.example.haelogproject.common.TimeStamp;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
 @Getter
 @NoArgsConstructor
 @Entity
 public class Member extends TimeStamp {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
@@ -28,12 +27,17 @@ public class Member extends TimeStamp {
     @Column(nullable = true)
     private String description;
 
+//    @OneToMany(mappedBy = "tag")
+//    private List<Tag> tagList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "comment")
+//    private List<Comment> commentList = new ArrayList<>();
+
     @Builder
-    public Member(String loginId, String password, String nickname, String description){
+    public Member(String loginId, String password, String nickname, String description) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = nickname;
         this.description = description;
     }
-
 }
