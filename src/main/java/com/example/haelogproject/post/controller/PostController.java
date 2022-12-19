@@ -1,7 +1,7 @@
 package com.example.haelogproject.post.controller;
 
+import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
-import com.example.haelogproject.post.dto.PostResponseDto;
 import com.example.haelogproject.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,8 @@ public class PostController {
     private final PostService postService;
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponseDto> updatepost(@PathVariable Long postId,@RequestBody PostRequestDto postRequestDto){
-
-        PostResponseDto postResponseDto = postService.updatepost(postId,postRequestDto);
-        return new ResponseEntity<PostResponseDto>(postResponseDto,HttpStatus.OK);
+    public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto){
+        ResponseDto response = postService.updatePost(postId, postRequestDto);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

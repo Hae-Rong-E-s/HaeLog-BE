@@ -1,7 +1,14 @@
 package com.example.haelogproject.post.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.Column;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class PostRequestDto {
 
     @Column(nullable = false, unique = true)
@@ -16,20 +23,10 @@ public class PostRequestDto {
     @Column(length = 150, nullable = true)
     private String contentSummary;
 
-
-    public Long getMemberId() {
-        return this.memberId;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getContent() {
-        return this.content;
-    }
-
-    public String getContentSummary() {
-        return this.contentSummary;
+    public PostRequestDto(Long memberId, String title, String content, String contentSummary) {
+        this.memberId = memberId;
+        this.title = title;
+        this.content = content;
+        this.contentSummary = contentSummary;
     }
 }
