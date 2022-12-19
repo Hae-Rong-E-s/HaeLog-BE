@@ -1,15 +1,16 @@
 package com.example.haelogproject.common.response;
 
+import com.example.haelogproject.common.exception.ExceptionMessage;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 import lombok.Getter;
+
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseDto<T> {
-    private String result;
-    private String msg;
-    private T data;
+    private final String result;
+    private final String msg;
+    private final T data;
 
     public ResponseDto(String result, String msg, T data){
         this.result = result;
@@ -17,8 +18,9 @@ public class ResponseDto<T> {
         this.data = data;
     }
 
-    public ResponseDto(String result, String msg) {
-        this.result = result;
-        this.msg = msg;
+    public ResponseDto(ExceptionMessage exceptionMessage){
+        this.result = "fail";
+        this.msg = exceptionMessage.getMsg();
+        this.data = null;
     }
 }
