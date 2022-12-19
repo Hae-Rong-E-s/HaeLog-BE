@@ -18,7 +18,6 @@ import java.io.IOException;
 import static com.example.haelogproject.common.exception.ExceptionMessage.INVALID_TOKEN_MSG;
 import static com.example.haelogproject.common.exception.ExceptionMessage.TOKEN_NOT_FOUND_MSG;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;

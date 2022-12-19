@@ -23,6 +23,4 @@ public class ResponseDto<T> {
         this.msg = exceptionMessage.getMsg();
         this.data = null;
     }
-
-    //정적 팩토리 메소드 추가 예정
 }

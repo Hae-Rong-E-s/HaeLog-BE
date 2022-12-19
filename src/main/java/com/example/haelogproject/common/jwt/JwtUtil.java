@@ -23,9 +23,9 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import static com.example.haelogproject.common.exception.ExceptionMessage.REFRESH_TOKEN_NOT_FOUND_MSG;
+
 import static com.example.haelogproject.common.exception.ExceptionMessage.TOKEN_NOT_FOUND_MSG;
-import static com.example.haelogproject.common.exception.ExceptionMessage.USER_NOT_FOUND_ERROR_MSG;
+
 
 @Slf4j
 @Component
@@ -156,29 +156,29 @@ public class JwtUtil {
         }
     }
 
-    private void accessTokenReissuance(HttpServletRequest request, HttpServletResponse response) {
-        // 1. request에서 accessToken 분해 후, 사용자 이름 찾아옴.
-        Claims info = getUserInfoFromHttpServletRequest(request);
-        System.out.println("username : " + info.getSubject());
-        // 2. 사용자 이름을 통해 Member Entity 불러옴
-        Member member = memberRepository.findByLoginId(info.getSubject())
-                .orElseThrow(()-> new CustomSecurityException(USER_NOT_FOUND_ERROR_MSG));
-        // 3. MemberEntity에 등록된 Access Token과 Refresh Token이 Request에 담긴 값과 일치하는 지 확인
-        if (member.getAccessToken().substring(7).equals(resolveToken(request, "AccessToken"))
-                && member.getRefreshToken().substring(7).equals(resolveToken(request, "RefreshToken"))){
-            // 4. RefreshToken 유효성 검사
-            if(!validateRefreshToken(resolveToken(request, "RefreshToken"))){
-                throw new CustomSecurityException(REFRESH_TOKEN_NOT_FOUND_MSG);
-            }
-            System.out.println("JWT 재발급 조건 충족");
-            String newAccessToken = createAccessToken(member.getLoginId());
-            response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, newAccessToken);
-            // 5. Member Data 최신화
-            member.updateToken(newAccessToken, member.getRefreshToken());
-            memberRepository.save(member);
-        }
-        // 6. 로그인 페이지 반환
-    }
+//    private void accessTokenReissuance(HttpServletRequest request, HttpServletResponse response) {
+//        // 1. request에서 accessToken 분해 후, 사용자 이름 찾아옴.
+//        Claims info = getUserInfoFromHttpServletRequest(request);
+//        System.out.println("username : " + info.getSubject());
+//        // 2. 사용자 이름을 통해 Member Entity 불러옴
+//        Member member = memberRepository.findByLoginId(info.getSubject())
+//                .orElseThrow(()-> new CustomSecurityException(USER_NOT_FOUND_ERROR_MSG));
+//        // 3. MemberEntity에 등록된 Access Token과 Refresh Token이 Request에 담긴 값과 일치하는 지 확인
+//        if (member.getAccessToken().substring(7).equals(resolveToken(request, "AccessToken"))
+//                && member.getRefreshToken().substring(7).equals(resolveToken(request, "RefreshToken"))){
+//            // 4. RefreshToken 유효성 검사
+//            if(!validateRefreshToken(resolveToken(request, "RefreshToken"))){
+//                throw new CustomSecurityException(REFRESH_TOKEN_NOT_FOUND_MSG);
+//            }
+//            System.out.println("JWT 재발급 조건 충족");
+//            String newAccessToken = createAccessToken(member.getLoginId());
+//            response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, newAccessToken);
+//            // 5. Member Data 최신화
+//            member.updateToken(newAccessToken, member.getRefreshToken());
+//            memberRepository.save(member);
+//        }
+//        // 6. 로그인 페이지 반환
+//    }
 
     // 인증 객체 생성
     public Authentication createAuthentication(String memberName) {
