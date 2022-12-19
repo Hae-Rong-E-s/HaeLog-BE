@@ -1,5 +1,6 @@
 package com.example.haelogproject.member.service;
 
+import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.member.dto.RequestUserLogin;
 import com.example.haelogproject.member.dto.RequestUserSignup;
 import com.example.haelogproject.member.entity.Member;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class MemberService {
     private final MemberRespository memberRespository;
     private final MemberMapper memberMapper;
     private final Validator validator;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void signup(RequestUserSignup requestUserSignup) {
@@ -64,9 +68,12 @@ public class MemberService {
                     throw new IllegalArgumentException("중복된 닉네임 입니다.");
                 }
         );
+            // TODO
+            //  1-3. loginId 와 중복될 경우(?)
+
     }
 
-    public void login(RequestUserLogin requestUserLogin) {
+    public void login(RequestUserLogin requestUserLogin, HttpServletResponse response) {
         String loginId = requestUserLogin.getLoginId();
         String password = requestUserLogin.getPassword();
 
@@ -81,5 +88,10 @@ public class MemberService {
         }
 
         // 토큰 발급
+        String accessToken = jwtUtil.createAccessToken(loginId);
+        String refreshToken = jwtUtil.createRefreshToken();
+
+        response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
+        response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
     }
 }

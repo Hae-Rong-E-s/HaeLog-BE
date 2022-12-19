@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -45,8 +47,8 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody RequestUserLogin requestUserLogin) {
-        memberService.login(requestUserLogin);
+    public ResponseEntity<ResponseDto> login(@RequestBody RequestUserLogin requestUserLogin, HttpServletResponse response) {
+        memberService.login(requestUserLogin, response);
 
         return new ResponseEntity<>(new ResponseDto("success", "로그인이 완료되었습니다.", null), HttpStatus.OK);
     }
