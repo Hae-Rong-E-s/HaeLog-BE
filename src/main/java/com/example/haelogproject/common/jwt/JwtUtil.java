@@ -2,7 +2,6 @@ package com.example.haelogproject.common.jwt;
 
 import com.example.haelogproject.common.jwt.exception.CustomSecurityException;
 import com.example.haelogproject.common.security.UserDetailsServiceimpl;
-import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.repository.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
