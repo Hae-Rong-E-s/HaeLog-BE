@@ -1,8 +1,10 @@
 package com.example.haelogproject.member.service;
 
 import com.example.haelogproject.common.jwt.JwtUtil;
+import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.dto.RequestUserLogin;
 import com.example.haelogproject.member.dto.RequestUserSignup;
+import com.example.haelogproject.member.dto.ResponseUserLogin;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.mapper.MemberMapper;
 import com.example.haelogproject.member.repository.MemberRepository;
@@ -69,7 +71,7 @@ public class MemberService {
         );
     }
 
-    public void login(RequestUserLogin requestUserLogin, HttpServletResponse response) {
+    public ResponseDto<ResponseUserLogin> login(RequestUserLogin requestUserLogin, HttpServletResponse response) {
         String loginId = requestUserLogin.getLoginId();
         String password = requestUserLogin.getPassword();
 
@@ -87,5 +89,7 @@ public class MemberService {
         String accessToken = jwtUtil.createAccessToken(loginId);
 
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
+
+        return new ResponseDto<>("success", "로그인이 완료되었습니다.", new ResponseUserLogin(member.getNickname()));
     }
 }
