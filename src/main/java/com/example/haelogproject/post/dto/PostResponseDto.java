@@ -8,11 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PostResponseDto {
-
     private String result;
-
     private String msg;
-
     public PostResponseDto(String result, String msg) {
         this.result = result;
         this.msg = msg;

@@ -22,10 +22,9 @@ public class Tag {
     @Column(nullable = false)
     private String tagName;
 
-//    @Builder
-//    public Tag(String tagName, Post post, Member member) {
-//        this.tagName = tagName;
-//        this.post = post;
-//        this.member = member;
-//    }
+    @Builder
+    public Tag(String tagName, Member member) {
+        this.tagName = tagName;
+        this.member = member;
+    }
 }
