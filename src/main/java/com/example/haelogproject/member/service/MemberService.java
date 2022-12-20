@@ -41,6 +41,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
     public void checkLoginId(RequestUserSignup requestUserSignup) {
         // 1. loginId 체크
             // 1-1. loginId 값 validation
@@ -56,6 +57,7 @@ public class MemberService {
         );
     }
 
+    @Transactional
     public void checkNickname(RequestUserSignup requestUserSignup) {
         // 1. nickname 체크
             // 1-1. nickname 값 validation
@@ -71,6 +73,7 @@ public class MemberService {
         );
     }
 
+    @Transactional
     public ResponseDto<ResponseUserLogin> login(RequestUserLogin requestUserLogin, HttpServletResponse response) {
         String loginId = requestUserLogin.getLoginId();
         String password = requestUserLogin.getPassword();

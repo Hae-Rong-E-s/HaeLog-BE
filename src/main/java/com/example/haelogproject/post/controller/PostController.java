@@ -2,23 +2,19 @@ package com.example.haelogproject.post.controller;
 
 import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.common.security.UserDetailsImpl;
-import com.example.haelogproject.member.entity.Member;
+import com.example.haelogproject.post.dto.PostDetailResponseDto;
 import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
-import com.example.haelogproject.post.dto.PostDetailResponseDto;
 import com.example.haelogproject.post.dto.PostSimpleResponseDto;
-import com.example.haelogproject.post.entity.Tag;
 import com.example.haelogproject.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +35,7 @@ public class PostController {
     @PutMapping("/post/{postId}")
     public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto response, @AuthenticationPrincipal UserDetailsImpl userDetails){
         postService.updatePost(postId, response, userDetails.getMember());
-        return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", null), HttpStatus.OK);
+        return new ResponseEntity(new ResponseDto("success", "게시물 수정이 완료되었습니다.", null), HttpStatus.OK);
     }
 
     // 게시물 삭제

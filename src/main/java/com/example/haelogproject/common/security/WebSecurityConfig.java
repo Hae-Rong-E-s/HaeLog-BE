@@ -55,6 +55,9 @@ public class WebSecurityConfig {
                 antMatchers("/api/member/login").permitAll().
                 antMatchers("/api/member/signup/loginid").permitAll().
                 antMatchers("/api/member/signup/nickname").permitAll().
+                antMatchers("/api/{nickname}").permitAll().
+                antMatchers("/api/{nickname}/post").permitAll().
+                antMatchers("/api").permitAll().
                 antMatchers("/").permitAll().
                 anyRequest().authenticated();
 

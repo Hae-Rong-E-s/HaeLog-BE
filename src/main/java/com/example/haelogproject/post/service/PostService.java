@@ -1,13 +1,11 @@
 package com.example.haelogproject.post.service;
 
+import com.example.haelogproject.comment.entity.Comment;
 import com.example.haelogproject.comment.repository.CommentRepository;
 import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.repository.MemberRepository;
-import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
-import com.example.haelogproject.post.dto.PostRequestDto;
-import com.example.haelogproject.post.dto.PostDetailResponseDto;
-import com.example.haelogproject.post.dto.PostSimpleResponseDto;
+import com.example.haelogproject.post.dto.*;
 import com.example.haelogproject.post.entity.Post;
 import com.example.haelogproject.post.entity.PostTag;
 import com.example.haelogproject.post.entity.Tag;
@@ -16,7 +14,6 @@ import com.example.haelogproject.post.repository.PostRepository;
 import com.example.haelogproject.post.repository.PostTagRepository;
 import com.example.haelogproject.post.repository.TagRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,7 +140,7 @@ public class PostService {
         }
 
         // 댓글 삭제
-        commentRepository.deleteAllByPost(postId);
+        commentRepository.deleteAllByPost(post);
 
         // 게시물 삭제
         postRepository.deleteById(postId);
@@ -160,7 +157,7 @@ public class PostService {
         Member member = memberRepository.findByMemberId(post.getMemberId());
 
         // 로그인 상태 확인
-        String token = jwtUtil.resolveToken(request, "AccessToken");
+        String token = jwtUtil.resolveToken(request, "Authorization");
         boolean isAuthor = false;
 
         // 로그인 상태라면 조회 요청한 유저와 게시물을 작성한 유저가 동일 유저인지 확인
@@ -174,6 +171,13 @@ public class PostService {
             }
         }
 
+        List<Comment> commentList = commentRepository.findAllByPost(post);
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(new CommentResponseDto(comment));
+        }
+
         List<String> tags = new ArrayList<>();
 
         // 게시물 태그 정보 가져오기 && List<String>형태로 변경
@@ -184,7 +188,7 @@ public class PostService {
         }
 
         // 조회한 값들을 DTO로 변환 및 반환
-        return mapper.toDetailDto(post, member, isAuthor, tags);
+        return mapper.toDetailDto(post, member, isAuthor, tags, commentResponseDtoList);
     }
 
     // 유저의 모든 게시물 조회하기
