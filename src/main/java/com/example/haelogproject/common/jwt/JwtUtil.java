@@ -30,7 +30,7 @@ import static com.example.haelogproject.common.exception.ExceptionMessage.TOKEN_
 @PropertySource("classpath:security.properties")
 @RequiredArgsConstructor
 public class JwtUtil {
-    public static final String AUTHORIZATION_ACCESS = "AccessToken";
+    public static final String AUTHORIZATION_ACCESS = "Authorization";
     // RefreshToken Key 값
     public static final String AUTHORIZATION_REFRESH = "RefreshToken";
     // 사용자 권한 Key 값

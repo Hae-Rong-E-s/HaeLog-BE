@@ -1,10 +1,7 @@
 package com.example.haelogproject.post.mapper;
 
 import com.example.haelogproject.member.entity.Member;
-import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
-import com.example.haelogproject.post.dto.PostRequestDto;
-import com.example.haelogproject.post.dto.PostDetailResponseDto;
-import com.example.haelogproject.post.dto.PostSimpleResponseDto;
+import com.example.haelogproject.post.dto.*;
 import com.example.haelogproject.post.entity.Post;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +19,7 @@ public class PostMapper {
                 .build();
     }
 
-    public PostDetailResponseDto toDetailDto(Post post, Member member, boolean isAuthor, List<String> tagList) {
+    public PostDetailResponseDto toDetailDto(Post post, Member member, boolean isAuthor, List<String> tagList, List<CommentResponseDto> commentResponseDtoList) {
         return PostDetailResponseDto.builder()
                 .postid(post.getPostId())
                 .createdAt(post.getCreatedAt())
@@ -30,8 +27,10 @@ public class PostMapper {
                 .tags(tagList)
                 .postMemberNikname(member.getNickname())
                 .isMyPost(isAuthor)
+                .description(member.getDescription())
+                .postContent(post.getContent())
                 .contentSummary(post.getContentSummary())
-                .commentList(post.getCommentList())
+                .commentResponseDtoList(commentResponseDtoList)
                 .build();
     }
 
