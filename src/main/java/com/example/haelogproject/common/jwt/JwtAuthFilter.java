@@ -43,7 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // Post 조회 관련 API 일때 해당 Filter 건너뜀
-        if (uri.contains("/post") && method.equals("GET")) {
+        if (uri.contains("/api") && method.equals("GET")) {
             filterChain.doFilter(request, response);
             return;
         }
