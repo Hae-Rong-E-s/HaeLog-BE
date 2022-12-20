@@ -184,4 +184,9 @@ public class JwtUtil {
         UserDetails userDetails = userDetailsServiceimpl.loadUserByUsername(memberName); // 이름을 통해 사용자 조회
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); //userDetail 및 권한 넣어 생성
     }
+
+    // Jwt에서 유저 정보 가져오기
+    public Claims getUserInfoFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
+    }
 }

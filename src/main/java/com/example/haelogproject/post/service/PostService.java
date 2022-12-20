@@ -1,8 +1,11 @@
 package com.example.haelogproject.post.service;
 
 import com.example.haelogproject.comment.repository.CommentRepository;
+import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.member.entity.Member;
+import com.example.haelogproject.member.repository.MemberRepository;
 import com.example.haelogproject.post.dto.PostRequestDto;
+import com.example.haelogproject.post.dto.PostDetailResponseDto;
 import com.example.haelogproject.post.entity.Post;
 import com.example.haelogproject.post.entity.PostTag;
 import com.example.haelogproject.post.entity.Tag;
@@ -10,10 +13,14 @@ import com.example.haelogproject.post.mapper.PostMapper;
 import com.example.haelogproject.post.repository.PostRepository;
 import com.example.haelogproject.post.repository.PostTagRepository;
 import com.example.haelogproject.post.repository.TagRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +33,9 @@ public class PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
     private final PostMapper mapper;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void writePost(PostRequestDto request, Member member) {
@@ -135,5 +144,42 @@ public class PostService {
 
         // 게시물 삭제
         postRepository.deleteById(postId);
+    }
+
+    public PostDetailResponseDto getDetailPost(String nickname, Long postid, HttpServletRequest request) {
+
+        Post post = postRepository.findById(postid).orElseThrow(
+                () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
+        );
+
+        // 작성자 정보 가져오기
+        Member member = memberRepository.findByMemberId(post.getMemberId());
+
+        // 로그인 상태 확인
+        String token = jwtUtil.resolveToken(request, "AccessToken");
+        boolean isAuthor = false;
+
+        // 로그인 상태라면 조회 요청한 유저와 게시물을 작성한 유저가 동일 유저인지 확인
+        if (token != null) {
+            Claims claims = jwtUtil.getUserInfoFromToken(token);
+            Optional<Member> requestMember = memberRepository.findByLoginId(claims.getSubject());
+            if (requestMember.isPresent()) {
+                if (requestMember.get().getMemberId().equals(member.getMemberId())) {
+                    isAuthor = true;
+                }
+            }
+        }
+
+        List<String> tags = new ArrayList<>();
+
+        // 게시물 태그 정보 가져오기 && List<String>형태로 변경
+        List<PostTag> postTags = postTagRepository.findAllByPost(post);
+
+        for (PostTag tag : postTags) {
+            tags.add(tag.getTag().getTagName());
+        }
+
+        // 조회한 값들을 DTO로 변환 및 반환
+        return mapper.toDetailDto(post, member, isAuthor, tags);
     }
 }
