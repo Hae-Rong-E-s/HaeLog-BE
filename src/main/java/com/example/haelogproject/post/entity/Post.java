@@ -46,5 +46,9 @@ public class Post extends TimeStamp {
         this.title = title;
         this.content = content;
         this.contentSummary = contentSummary;
+
+    // 연관관계 편의 메소드
+    public void addComment(Comment comment) {
+        this.commentList.add(comment);
     }
 }
