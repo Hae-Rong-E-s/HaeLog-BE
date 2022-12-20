@@ -2,6 +2,7 @@ package com.example.haelogproject.post.controller;
 
 import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.entity.Member;
+import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
 import com.example.haelogproject.post.dto.PostDetailResponseDto;
 import com.example.haelogproject.post.dto.PostSimpleResponseDto;
@@ -63,6 +64,13 @@ public class PostController {
     @GetMapping("")
     public ResponseEntity<ResponseDto> getUserPostListByTag(@RequestParam String nickname, @RequestParam String tag) {
         List<PostSimpleResponseDto> response = postService.getUserPostListByTag(nickname, tag);
-        return new ResponseEntity<>(new ResponseDto("success", "유저의 게시물 조회 성공", response), HttpStatus.OK);
+        return new ResponseEntity(new ResponseDto("success", "유저의 게시물 조회 성공", response), HttpStatus.OK);
+    }
+
+    // 게시물 수정 페이지에 필요한 정보 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<ResponseDto> getPostInfoForUpdate(@PathVariable Long postId, Member member) {
+        PostInfoForUpdateDto response = postService.getPostInfoForUpdate(postId, member);
+        return new ResponseEntity(new ResponseDto("success", "게시물 수정에 필요한 정보를 반환했습니다.", response), HttpStatus.OK);
     }
 }
