@@ -17,4 +17,10 @@ public class ResponseDto<T> {
         this.msg = msg;
         this.data = data;
     }
+
+    public ResponseDto(ExceptionMessage exceptionMessage){
+        this.result = "fail";
+        this.msg = exceptionMessage.getMsg();
+        this.data = null;
+    }
 }

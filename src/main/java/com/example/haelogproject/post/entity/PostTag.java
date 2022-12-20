@@ -1,6 +1,7 @@
 package com.example.haelogproject.post.entity;
 
 import com.example.haelogproject.member.entity.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class PostTag {
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
+    @Builder
     public PostTag(Post post, Tag tag) {
         this.post = post;
         this.tag = tag;
