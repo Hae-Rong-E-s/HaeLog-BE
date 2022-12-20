@@ -3,6 +3,7 @@ package com.example.haelogproject.post.mapper;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.post.dto.PostRequestDto;
 import com.example.haelogproject.post.dto.PostDetailResponseDto;
+import com.example.haelogproject.post.dto.PostSimpleResponseDto;
 import com.example.haelogproject.post.entity.Post;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,18 @@ public class PostMapper {
                 .isMyPost(isAuthor)
                 .contentSummary(post.getContentSummary())
                 .commentList(post.getCommentList())
+                .build();
+    }
+
+    public PostSimpleResponseDto toSimpleDto(Post post, Member author, List<String> tags, Long commentCount) {
+        return PostSimpleResponseDto.builder()
+                .postid(post.getPostId())
+                .createdAt(post.getCreatedAt())
+                .title(post.getTitle())
+                .tags(tags)
+                .contentSummary(post.getContentSummary())
+                .nickname(author.getNickname())
+                .commentCount(commentCount)
                 .build();
     }
 }

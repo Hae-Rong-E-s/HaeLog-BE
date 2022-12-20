@@ -6,6 +6,7 @@ import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.repository.MemberRepository;
 import com.example.haelogproject.post.dto.PostRequestDto;
 import com.example.haelogproject.post.dto.PostDetailResponseDto;
+import com.example.haelogproject.post.dto.PostSimpleResponseDto;
 import com.example.haelogproject.post.entity.Post;
 import com.example.haelogproject.post.entity.PostTag;
 import com.example.haelogproject.post.entity.Tag;
@@ -181,5 +182,27 @@ public class PostService {
 
         // 조회한 값들을 DTO로 변환 및 반환
         return mapper.toDetailDto(post, member, isAuthor, tags);
+    }
+
+    // 유저의 모든 게시물 조회하기
+    public List<PostSimpleResponseDto> getUserPostList(String nickname) {
+        Member author = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+        List<Post> postList = postRepository.findAllByMemberId(author.getMemberId());
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+
+        for (Post post : postList) {
+            // 게시물 태그 정보 가져오기 && List<String>형태로 변경
+            List<PostTag> postTags = postTagRepository.findAllByPost(post);
+            List<String> tags = new ArrayList<>();
+            for (PostTag tag : postTags) {
+                tags.add(tag.getTag().getTagName());
+            }
+
+            response.add(mapper.toSimpleDto(post, author, tags, commentRepository.countByPost(post)));
+        }
+
+        return response;
     }
 }
