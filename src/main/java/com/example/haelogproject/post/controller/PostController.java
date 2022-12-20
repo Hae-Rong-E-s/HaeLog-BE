@@ -23,9 +23,14 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto, Member member){
-        postService.updatePost(postId, postRequestDto, member);
+    public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto response, Member member){
+        postService.updatePost(postId, response, member);
+        return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", null), HttpStatus.OK);
+    }
 
-        return new ResponseEntity(response, HttpStatus.OK);
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ResponseDto> deletePost(@PathVariable Long postId, Member member) {
+        postService.deletePost(postId, member);
+        return new ResponseEntity(new ResponseDto("success", "게시물 삭제 완료.", null), HttpStatus.OK);
     }
 }
