@@ -46,7 +46,7 @@ public class PostService {
 
         for (String tag : request.getTags()) {
             // 요청으로 들어온 tag리스트를 전부 확인하면서 이미 만들어진 태그 이름이 있는 지 확인
-            Optional<Tag> savedTag = tagRepository.findByTagNameAndMember_Id(tag, member.getMemberId());
+            Optional<Tag> savedTag = tagRepository.findByMemberAndTagName(member, tag);
 
             // 중복이 있다면 해당 아이디로 태그 저장, 중복이 없다면 새로운 태그 생성
             if (savedTag.isPresent()) {
@@ -85,11 +85,11 @@ public class PostService {
         }
 
         // 기존에 해당 포스트에 저장된 태그를 전부 삭제하고 새로 생성
-        postTagRepository.deleteAllByPost_Id(post.getPostId());
+        postTagRepository.deleteAllByPost(post);
 
         for (String tag : request.getTags()) { // 태그가 무조건 하나가 있어야되나?
             // 요청으로 들어온 tag리스트를 전부 확인하면서 이미 만들어진 태그 이름이 있는 지 확인
-            Optional<Tag> savedTag = tagRepository.findByTagNameAndMember_Id(tag, member.getMemberId());
+            Optional<Tag> savedTag = tagRepository.findByMemberAndTagName(member, tag);
 
             // 중복이 있다면 해당 아이디로 태그 저장, 중복이 없다면 새로운 태그 생성
             if (savedTag.isPresent()) {
@@ -120,18 +120,18 @@ public class PostService {
         }
 
         // 태그(PostTag) 삭제
-        postTagRepository.deleteAllByPost_Id(postId);
+        postTagRepository.deleteAllByPost(post);
 
         // 태그 이름(Tag)을 사용하는 게시물이 없을 경우 태그도 삭제
-        List<Tag> tags = tagRepository.findAllByMember_Id(member.getMemberId());
+        List<Tag> tags = tagRepository.findAllByMember(member);
         for (Tag tag : tags) {
-            if (!postTagRepository.existsByTag_Id(tag.getTagId())) {
+            if (!postTagRepository.existsByTag(tag)) {
                 tagRepository.delete(tag);
             }
         }
 
         // 댓글 삭제
-        commentRepository.deleteAllByPost_Id(postId);
+        commentRepository.deleteAllByPost(postId);
 
         // 게시물 삭제
         postRepository.deleteById(postId);

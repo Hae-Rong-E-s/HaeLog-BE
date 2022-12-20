@@ -1,7 +1,6 @@
 package com.example.haelogproject.post.entity;
 
 import com.example.haelogproject.member.entity.Member;
-import com.example.haelogproject.post.entity.Post;
 import javax.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
