@@ -42,6 +42,11 @@ public class Post extends TimeStamp {
         this.contentSummary = contentSummary;
     }
 
+    public void update(String title, String content, String contentSummary) {
+        this.title = title;
+        this.content = content;
+        this.contentSummary = contentSummary;
+
     // 연관관계 편의 메소드
     public void addComment(Comment comment) {
         this.commentList.add(comment);
