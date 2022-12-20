@@ -7,25 +7,22 @@ import java.util.regex.Pattern;
 @Component
 public class Validator {
     public boolean validPassword(String password) {
-        // "비밀번호는 알파벳과 숫자, 특수문자로 구성된 10~15자리로 작성해주세요."
-        final String regex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{10,15}$";
+        // "비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8~16자리로 작성해주세요."
+        final String regex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[a-zA-Z\\d~!@#$%^&*()+|=]{8,16}$";
 
         return Pattern.matches(regex, password);
     }
 
     public boolean validLoginId(String loginId) {
-        // "아이디는 알파벳 소문자와 숫자로 구성된 4~10자리로 작성해주세요."
-        final String regex = "^(?=.*[a-z])(?=.*\\d)[a-z\\d]{4,10}$";
+        // "아이디는 영문 소문자, 숫자가 모두 포함된 4~12자리로 작성해주세요."
+        final String regex = "^(?=.*[a-z])(?=.*\\d)[a-z\\d]{4,12}$";
 
         return Pattern.matches(regex, loginId);
     }
 
     public boolean validNickname(String nickname) {
-        // TODO
-        //  닉네임 조건을 바꾸는게 좋지 않을까?
-
-        // "닉네임은 알파벳 대소문자와 숫자로 구성된 2~8자리로 작성해주세요."
-        final String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{2,8}$";
+        // "닉네임은 영문 소문자, 한글, 숫자로 구성된 2~8자리로 작성해주세요."
+        final String regex = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,8}$";
 
         return Pattern.matches(regex, nickname);
     }
