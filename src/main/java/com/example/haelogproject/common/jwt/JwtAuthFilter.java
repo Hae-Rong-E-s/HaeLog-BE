@@ -31,7 +31,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (uri.equals("/api/member/login")
                 || uri.equals("/api/member/signup")
                 || uri.equals("/api/member/signup/loginid")
-                || uri.equals("/api/member/signup/nickname")) {
+                || uri.equals("/api/member/signup/nickname")
+                || uri.equals("/")) {
             filterChain.doFilter(request, response);
             return;
         }
