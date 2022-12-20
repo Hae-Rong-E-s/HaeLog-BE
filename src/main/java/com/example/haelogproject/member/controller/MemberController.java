@@ -1,8 +1,8 @@
 package com.example.haelogproject.member.controller;
 
+import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.dto.RequestUserLogin;
 import com.example.haelogproject.member.dto.RequestUserSignup;
-import com.example.haelogproject.member.dto.ResponseDto;
 import com.example.haelogproject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,9 +47,9 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody RequestUserLogin requestUserLogin, HttpServletResponse response) {
-        memberService.login(requestUserLogin, response);
+    public ResponseEntity login(@RequestBody RequestUserLogin requestUserLogin, HttpServletResponse response) {
+        ResponseDto responseDto = memberService.login(requestUserLogin, response);
 
-        return new ResponseEntity<>(new ResponseDto("success", "로그인이 완료되었습니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }
