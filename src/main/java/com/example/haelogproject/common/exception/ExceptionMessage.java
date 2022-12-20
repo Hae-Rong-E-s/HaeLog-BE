@@ -5,8 +5,15 @@ import lombok.Getter;
 @Getter
 public enum ExceptionMessage {
 
-
-
+    //Member 도메인
+    DUPLICATE_LOGIN_ID (400, "중복된 아이디가 존재합니다."),
+    DUPLICATE_NICKNAME (400, "중복된 닉네임이 존재합니다."),
+    INVALID_LOGIN_ID (400, "아이디는 영문 소문자, 숫자가 모두 포함된 4~12 자리로 작성해주세요."),
+    INVALID_PASSWORD (400, "비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8~16 자리로 작성해주세요."),
+    INVALID_NICKNAME (400, "닉네임은 영문 소문자, 한글, 숫자로 구성된 2~8 자리로 작성해주세요."),
+    LOGIN_ID_NOT_FOUND (404, "일치하는 회원 정보가 없습니다."),
+    WRONG_LOGIN_ID (404, "일치하는 회원 정보가 없습니다."),
+    WRONG_PASSWORD (404, "일치하는 회원 정보가 없습니다."),
 
 
     // JWT, OAuth
