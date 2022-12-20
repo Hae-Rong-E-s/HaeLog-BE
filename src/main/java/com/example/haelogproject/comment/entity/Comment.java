@@ -34,7 +34,7 @@ public class Comment extends TimeStamp {
         this.content = content;
     }
 
-    public void update(String comment) {
-        this.content = content;
+    public void update(String beforeComment) {
+        this.content = beforeComment;
     }
 }
