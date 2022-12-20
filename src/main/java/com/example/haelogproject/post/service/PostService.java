@@ -4,8 +4,10 @@ import com.example.haelogproject.comment.repository.CommentRepository;
 import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.repository.MemberRepository;
+import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
 import com.example.haelogproject.post.dto.PostDetailResponseDto;
+import com.example.haelogproject.post.dto.PostSimpleResponseDto;
 import com.example.haelogproject.post.entity.Post;
 import com.example.haelogproject.post.entity.PostTag;
 import com.example.haelogproject.post.entity.Tag;
@@ -117,6 +119,7 @@ public class PostService {
         post.update(request.getTitle(), request.getContent(), summary);
     }
 
+    @Transactional
     public void deletePost(Long postId, Member member) {
         // 기존에 저장된 게시물 불러오기
         Post post = postRepository.findById(postId).orElseThrow(
@@ -146,6 +149,7 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    @Transactional(readOnly = true)
     public PostDetailResponseDto getDetailPost(String nickname, Long postid, HttpServletRequest request) {
 
         Post post = postRepository.findById(postid).orElseThrow(
@@ -181,5 +185,80 @@ public class PostService {
 
         // 조회한 값들을 DTO로 변환 및 반환
         return mapper.toDetailDto(post, member, isAuthor, tags);
+    }
+
+    // 유저의 모든 게시물 조회하기
+    @Transactional(readOnly = true)
+    public List<PostSimpleResponseDto> getUserPostList(String nickname) {
+        Member author = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+        List<Post> postList = postRepository.findAllByMemberId(author.getMemberId());
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+
+        for (Post post : postList) {
+            // 게시물 태그 정보 가져오기 && List<String>형태로 변경
+            List<PostTag> postTags = postTagRepository.findAllByPost(post);
+            List<String> tags = new ArrayList<>();
+            for (PostTag tag : postTags) {
+                tags.add(tag.getTag().getTagName());
+            }
+            response.add(mapper.toSimpleDto(post, author, tags, commentRepository.countByPost(post)));
+        }
+
+        return response;
+    }
+
+    // 멤버가 작성한 게시물을 태그로 조회
+    @Transactional(readOnly = true)
+    public List<PostSimpleResponseDto> getUserPostListByTag(String nickname, String tagName) {
+        Member author = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+
+        Tag selectedTag = tagRepository.findByMemberAndTagName(author, tagName).orElseThrow(
+                () -> new IllegalArgumentException("해당 태그가 존재하지 않습니다.")
+        );
+
+        List<PostTag> postTagList = postTagRepository.findAllByTag(selectedTag);
+
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+
+        for (PostTag postTag : postTagList) {
+            Optional<Post> post = postRepository.findById(postTag.getPost().getPostId());
+            if (post.isPresent()) {
+                Post selectedPost = post.get();
+
+                List<PostTag> postTags = postTagRepository.findAllByPost(selectedPost);
+                List<String> tags = new ArrayList<>();
+                for (PostTag tag : postTags) {
+                    tags.add(tag.getTag().getTagName());
+                }
+
+                response.add(mapper.toSimpleDto(selectedPost, author, tags, commentRepository.countByPost(selectedPost)));
+            }
+        }
+
+        return response;
+    }
+
+    // 게시물 수정 페이지에 필요한 정보 조회
+    @Transactional(readOnly = true)
+    public PostInfoForUpdateDto getPostInfoForUpdate(Long postId, Member member) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
+        );
+
+        if (!post.getMemberId().equals(member.getMemberId())) {
+            throw new IllegalArgumentException("게시물 수정 권한이 없습니다.");
+        }
+
+        List<PostTag> postTags = postTagRepository.findAllByPost(post);
+        List<String> tags = new ArrayList<>();
+        for (PostTag tag : postTags) {
+            tags.add(tag.getTag().getTagName());
+        }
+
+        return mapper.toInfoDto(post, member, tags);
     }
 }

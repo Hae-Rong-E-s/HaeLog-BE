@@ -11,6 +11,8 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
 
     List<PostTag> findAllByPost(Post post);
 
+    List<PostTag> findAllByTag(Tag tag);
+
     void deleteAllByPost(Post post);
 
     boolean existsByTag(Tag tag);
