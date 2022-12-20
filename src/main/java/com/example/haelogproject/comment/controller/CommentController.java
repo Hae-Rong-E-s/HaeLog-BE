@@ -45,7 +45,6 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         commentService.deleteComment(commentId, userDetails.getMember());
-        ResponseDto responseDto = new ResponseDto("success", "댓글 삭제 완료.", null);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>("success", "댓글 삭제 완료.", null), HttpStatus.OK);
     }
 }
