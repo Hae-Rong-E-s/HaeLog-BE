@@ -24,9 +24,7 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        // 뭐가 더 좋을까요? 30 라인 코드와 41라인 코드 비교.
         commentService.writeComment(postId, requestCommentDto, userDetails.getMember());
-        // 1번
         return new ResponseEntity<>(new ResponseDto<>("success", "댓글 작성에 성공하였습니다.", null), HttpStatus.OK);
     }
 
@@ -36,10 +34,9 @@ public class CommentController {
             @RequestBody RequestCommentDto requestCommentDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+
         commentService.updateComment(commentId, requestCommentDto, userDetails.getMember());
-        // 2번
-        ResponseDto responseDto = new ResponseDto<>("success", "댓글 수정 완료.", null);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>("success", "댓글 수정 완료.", null), HttpStatus.OK);
     }
 
     @DeleteMapping("/{commentId}")

@@ -17,7 +17,7 @@ public class Comment extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
     @Column(columnDefinition = "TEXT", nullable = true)
-    private String comment;
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
@@ -27,16 +27,14 @@ public class Comment extends TimeStamp {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    // ERD nickname 넣어줘야할 지??
-
     @Builder
-    public Comment(Post post, RequestCommentDto requestCommentDto, Member member) {
+    public Comment(Post post, String content, Member member) {
         this.post = post;
         this.member = member;
-        this.comment = requestCommentDto.getContent();
+        this.content = content;
     }
 
     public void update(String comment) {
-        this.comment = comment;
+        this.content = content;
     }
 }

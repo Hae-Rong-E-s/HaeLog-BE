@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@Entity(name = "Post")
+@Entity
 public class Post extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
