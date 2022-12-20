@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@Entity
+@Entity(name = "Post")
 public class Post extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +42,8 @@ public class Post extends TimeStamp {
         this.contentSummary = contentSummary;
     }
 
+    // 연관관계 편의 메소드
+    public void addComment(Comment comment) {
+        this.commentList.add(comment);
+    }
 }
