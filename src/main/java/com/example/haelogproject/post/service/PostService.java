@@ -199,8 +199,39 @@ public class PostService {
             for (PostTag tag : postTags) {
                 tags.add(tag.getTag().getTagName());
             }
-
             response.add(mapper.toSimpleDto(post, author, tags, commentRepository.countByPost(post)));
+        }
+
+        return response;
+    }
+
+    // 멤버가 작성한 게시물을 태그로 정렬하기
+    public List<PostSimpleResponseDto> getUserPostListByTag(String nickname, String tagName) {
+        Member author = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+
+        Tag selectedTag = tagRepository.findByMemberAndTagName(author, tagName).orElseThrow(
+                () -> new IllegalArgumentException("해당 태그가 존재하지 않습니다.")
+        );
+
+        List<PostTag> postTagList = postTagRepository.findAllByTag(selectedTag);
+
+        List<PostSimpleResponseDto> response = new ArrayList<>();
+
+        for (PostTag postTag : postTagList) {
+            Optional<Post> post = postRepository.findById(postTag.getPost().getPostId());
+            if (post.isPresent()) {
+                Post selectedPost = post.get();
+
+                List<PostTag> postTags = postTagRepository.findAllByPost(selectedPost);
+                List<String> tags = new ArrayList<>();
+                for (PostTag tag : postTags) {
+                    tags.add(tag.getTag().getTagName());
+                }
+
+                response.add(mapper.toSimpleDto(selectedPost, author, tags, commentRepository.countByPost(selectedPost)));
+            }
         }
 
         return response;
