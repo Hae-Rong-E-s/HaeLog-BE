@@ -85,11 +85,7 @@ public class MemberService {
 
         // accessToken 토큰 발급
         String accessToken = jwtUtil.createAccessToken(loginId);
-            // refreshToken 미구현
-//        String refreshToken = jwtUtil.createRefreshToken();
 
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
-            // refreshToken 미구현
-//        response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
     }
 }
