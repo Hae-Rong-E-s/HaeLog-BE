@@ -1,6 +1,7 @@
 package com.example.haelogproject.post.controller;
 
 import com.example.haelogproject.common.response.ResponseDto;
+import com.example.haelogproject.common.security.UserDetailsImpl;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
@@ -11,6 +12,8 @@ import com.example.haelogproject.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,30 +22,30 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post")
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
 
     // 게시물 생성
-    @PostMapping("")
-    public ResponseEntity<ResponseDto> writePost(@RequestBody PostRequestDto request, Member member) {
-        postService.writePost(request, member);
+    @PostMapping("/post")
+    public ResponseEntity<ResponseDto> writePost(@RequestBody PostRequestDto request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.writePost(request, userDetails.getMember());
         return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", null), HttpStatus.OK);
     }
 
 
     // 게시물 수정
-    @PutMapping("/{postId}")
-    public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto response, Member member){
-        postService.updatePost(postId, response, member);
+    @PutMapping("/post/{postId}")
+    public ResponseEntity<ResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto response, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        postService.updatePost(postId, response, userDetails.getMember());
         return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", null), HttpStatus.OK);
     }
 
-    // 게시물 석제
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<ResponseDto> deletePost(@PathVariable Long postId, Member member) {
-        postService.deletePost(postId, member);
+    // 게시물 삭제
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<ResponseDto> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(postId, userDetails.getMember());
         return new ResponseEntity(new ResponseDto("success", "게시물 삭제 완료.", null), HttpStatus.OK);
     }
 
@@ -61,16 +64,16 @@ public class PostController {
     }
 
     // 맴버가 작성한 게시물을 태그 조회
-    @GetMapping("")
-    public ResponseEntity<ResponseDto> getUserPostListByTag(@RequestParam String nickname, @RequestParam String tag) {
+    @GetMapping("/{nickname}/post")
+    public ResponseEntity<ResponseDto> getUserPostListByTag(@PathVariable String nickname, @RequestParam String tag) {
         List<PostSimpleResponseDto> response = postService.getUserPostListByTag(nickname, tag);
         return new ResponseEntity(new ResponseDto("success", "유저의 게시물 조회 성공", response), HttpStatus.OK);
     }
 
     // 게시물 수정 페이지에 필요한 정보 조회
-    @GetMapping("/{postId}")
-    public ResponseEntity<ResponseDto> getPostInfoForUpdate(@PathVariable Long postId, Member member) {
-        PostInfoForUpdateDto response = postService.getPostInfoForUpdate(postId, member);
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<ResponseDto> getPostInfoForUpdate(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostInfoForUpdateDto response = postService.getPostInfoForUpdate(postId, userDetails.getMember());
         return new ResponseEntity(new ResponseDto("success", "게시물 수정에 필요한 정보를 반환했습니다.", response), HttpStatus.OK);
     }
 }
