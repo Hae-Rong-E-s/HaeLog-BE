@@ -6,6 +6,7 @@ import com.example.haelogproject.post.dto.PostDetailResponseDto;
 import com.example.haelogproject.post.dto.PostInfoForUpdateDto;
 import com.example.haelogproject.post.dto.PostRequestDto;
 import com.example.haelogproject.post.dto.PostSimpleResponseDto;
+import com.example.haelogproject.post.dto.PostCreateResponseDto;
 import com.example.haelogproject.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,8 @@ public class PostController {
     // 게시물 생성
     @PostMapping("/post")
     public ResponseEntity<ResponseDto> writePost(@RequestBody PostRequestDto request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        postService.writePost(request, userDetails.getMember());
-        return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", null), HttpStatus.OK);
+        PostCreateResponseDto response = postService.writePost(request, userDetails.getMember());
+        return new ResponseEntity(new ResponseDto("success", "게시물 등록이 완료되었습니다.", response), HttpStatus.OK);
     }
 
 

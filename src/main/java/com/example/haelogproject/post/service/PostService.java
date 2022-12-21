@@ -37,7 +37,7 @@ public class PostService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public void writePost(PostRequestDto request, Member member) {
+    public PostCreateResponseDto writePost(PostRequestDto request, Member member) {
         // 본문 내용 미리보기를 저장 할 필드
         String summary;
 
@@ -52,6 +52,7 @@ public class PostService {
         Post post = mapper.toEntity(request, member, summary);
         postRepository.save(post);
 
+        // 태그 저장
         for (String tag : request.getTags()) {
             // 요청으로 들어온 tag리스트를 전부 확인하면서 이미 만들어진 태그 이름이 있는 지 확인
             Optional<Tag> savedTag = tagRepository.findByMemberAndTagName(member, tag);
@@ -68,6 +69,8 @@ public class PostService {
                 postTagRepository.save(newPostTag);
             }
         }
+
+        return new PostCreateResponseDto(post.getPostId(), member.getNickname());
     }
 
     @Transactional
