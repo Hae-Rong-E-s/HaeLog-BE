@@ -37,7 +37,7 @@ public class PostService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public PostCreateResponseDto writePost(PostRequestDto request, Member member) {
+    public PostRedirectInfoDto writePost(PostRequestDto request, Member member) {
         // 본문 내용 미리보기를 저장 할 필드
         String summary;
 
@@ -70,11 +70,11 @@ public class PostService {
             }
         }
 
-        return new PostCreateResponseDto(post.getPostId(), member.getNickname());
+        return new PostRedirectInfoDto(post.getPostId(), member.getNickname());
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequestDto request, Member member) {
+    public PostRedirectInfoDto updatePost(Long postId, PostRequestDto request, Member member) {
 
         // 기존에 저장된 게시물 불러오기
         Post post = postRepository.findById(postId).orElseThrow(
@@ -117,6 +117,9 @@ public class PostService {
 
         // 게시물 내용 변경
         post.update(request.getTitle(), request.getContent(), summary);
+
+        // 수정 정보 반환
+        return new PostRedirectInfoDto(post.getPostId(), member.getNickname());
     }
 
     @Transactional
