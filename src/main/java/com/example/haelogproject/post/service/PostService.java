@@ -163,7 +163,7 @@ public class PostService {
         Member member = memberRepository.findByMemberId(post.getMemberId());
 
         // 로그인 상태 확인
-        String token = jwtUtil.resolveToken(request, "Authorization");
+        String token = jwtUtil.resolveToken(request, "authorization");
         boolean isLogin = (token != null) ? true : false;
 
         Member requestMember = new Member();
