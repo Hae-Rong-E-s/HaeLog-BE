@@ -3,6 +3,7 @@ package com.example.haelogproject.common.jwt;
 import com.example.haelogproject.common.jwt.exception.CustomSecurityException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,8 +26,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, CustomSecurityException {
         // Filter가 적용되고 있는 uri 추출
         String uri = request.getRequestURI();
-        //
-        System.out.println("uri = " + uri);
         String method = request.getMethod();
 
         // Login, SignUp, checkLoginId, checkNickname 전체 조회 API의 경우 해당 Filter 건너뜀.
@@ -48,8 +47,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
+        // pre-flight 요청일 때, 해당 Filter 건너뜀.
+        if (method.equals("OPTIONS")) {
+            return;
+        }
+
         // 1. Request에서 토큰 추출
-        String token = jwtUtil.resolveToken(request, "Authorization");
+        String token = jwtUtil.resolveToken(request, "authorization");
 
         // 2. Token 유효성 검사 및 인증
         // 2-1. Token 존재 여부 확인
