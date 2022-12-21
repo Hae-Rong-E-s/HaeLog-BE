@@ -4,17 +4,21 @@ import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.dto.RequestUserLogin;
 import com.example.haelogproject.member.dto.RequestUserSignup;
+import com.example.haelogproject.member.dto.ResponseMemberInfo;
 import com.example.haelogproject.member.dto.ResponseUserLogin;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.member.mapper.MemberMapper;
 import com.example.haelogproject.member.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -104,5 +108,30 @@ public class MemberService {
         response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
 
         return new ResponseDto<>("success", "로그인이 완료되었습니다.", new ResponseUserLogin(member.getNickname()));
+    }
+
+    public ResponseMemberInfo getUserInfo(String nickname, HttpServletRequest request) {
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new IllegalArgumentException("일치하는 회원 정보가 없습니다.")
+        );
+
+        // 요청에 JWT 포함 여부 확인
+        String token = jwtUtil.resolveToken(request, "Authorization");
+        boolean isLogin = (token != null) ? true : false;
+
+        // 요청한 회원과 요청한 정보의 회원 일치 여부를 저장하는 필드
+        boolean myInfo = false;
+
+        // 만약 JWT가 포함되어있다면 조회한 맴버외 비교
+        if (isLogin) {
+            // jwt 안의 정보를 이용하여 유저 조회
+            Claims claims = jwtUtil.getUserInfoFromToken(token);
+            String requestLoginId = claims.getSubject();
+            if (member.getLoginId().equals(requestLoginId)) {
+                myInfo = true;
+            }
+        }
+
+        return new ResponseMemberInfo(member.getDescription(), myInfo);
     }
 }
