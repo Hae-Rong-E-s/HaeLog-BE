@@ -1,7 +1,7 @@
 package com.example.haelogproject.member.exception;
 
 import com.example.haelogproject.common.exception.ExceptionMessage;
-import com.example.haelogproject.member.dto.ResponseDto;
+import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +57,12 @@ public class MemberExceptionHandler {
     //로그인 시 비밀번호가 일치하지 않을 경우
     @ExceptionHandler({WrongPasswordException.class})
     public ResponseEntity<ResponseDto> handleWrongPasswordException(WrongPasswordException e){
+        return makeErrorResponseEntity(e.getExceptionMessage());
+    }
+
+    //멤버 조회시 멤버가 없을 경우
+    @ExceptionHandler({MemberNotFoundException.class})
+    public ResponseEntity<ResponseDto> handleMemberNotFoundException(MemberNotFoundException e){
         return makeErrorResponseEntity(e.getExceptionMessage());
     }
 }
