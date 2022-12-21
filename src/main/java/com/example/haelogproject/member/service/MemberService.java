@@ -10,6 +10,7 @@ import com.example.haelogproject.member.mapper.MemberMapper;
 import com.example.haelogproject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,21 +24,31 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final Validator validator;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void signup(RequestUserSignup requestUserSignup) {
-        // 1-1. loginId 체크
+        // 1. loginId 체크
         checkLoginId(requestUserSignup);
-        // 1-2. nickname 체크
+
+        // 2. nickname 체크
         checkNickname(requestUserSignup);
 
-        // 2. password 값 validation
+        // 3. password 값 validation
         boolean checkPassword = validator.validPassword(requestUserSignup.getPassword());
         if(!checkPassword) {
             throw new IllegalArgumentException("비밀번호는 영문, 숫자, 특수문자가 모두 포함된 8~16자리로 작성해주세요.");
         }
-        // 3. Entity 생성 및 DB 저장
-        Member member = memberMapper.toMember(requestUserSignup);
+
+        // 4. 비밀번호 암호화 및 모든 정보 꺼내오기
+        String loginId = requestUserSignup.getLoginId();
+        String password = passwordEncoder.encode(requestUserSignup.getPassword());
+        String nickname = requestUserSignup.getNickname();
+        String description = requestUserSignup.getDescription();
+
+
+        // 5. Entity 생성 및 DB 저장
+        Member member = memberMapper.toMember(loginId, password, nickname, description);
         memberRepository.save(member);
     }
 
@@ -76,15 +87,14 @@ public class MemberService {
     @Transactional
     public ResponseDto<ResponseUserLogin> login(RequestUserLogin requestUserLogin, HttpServletResponse response) {
         String loginId = requestUserLogin.getLoginId();
-        String password = requestUserLogin.getPassword();
 
         // loginId 와 일치하는 회원정보가 있는지 확인.
         Member member = memberRepository.findByLoginId(loginId).orElseThrow(
                 () -> new IllegalArgumentException("일치하는 회원정보가 없습니다.")
         );
 
-        // 요청받은 password와 DB에 저장된 패스워드 비교.
-        if(!password.equals(member.getPassword())) {
+        // 요청받은 password 와 DB에 저장된 패스워드 비교.
+        if(!passwordEncoder.matches(requestUserLogin.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("일치하는 회원정보가 없습니다.");
         }
 
