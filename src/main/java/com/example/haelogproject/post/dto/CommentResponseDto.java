@@ -16,11 +16,11 @@ public class CommentResponseDto {
     private boolean myComment = true;
     private LocalDateTime createAt;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponseDto(Comment comment, boolean isMyComment) {
         this.commentId = comment.getCommentId();
         this.commentContent = comment.getContent();
         this.commentMemberNickname = comment.getMember().getNickname();
-        this.myComment = true;
+        this.myComment = isMyComment;
         this.createAt = comment.getCreatedAt();
     }
 }
