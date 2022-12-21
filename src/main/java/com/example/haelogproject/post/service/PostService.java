@@ -146,36 +146,51 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    // 게시물 상세 조회
     @Transactional(readOnly = true)
     public PostDetailResponseDto getDetailPost(String nickname, Long postid, HttpServletRequest request) {
 
         Post post = postRepository.findById(postid).orElseThrow(
                 () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
         );
-
         // 작성자 정보 가져오기
         Member member = memberRepository.findByMemberId(post.getMemberId());
 
         // 로그인 상태 확인
         String token = jwtUtil.resolveToken(request, "Authorization");
+        boolean isLogin = (token != null) ? true : false;
+
+        // jwt 내부 값 확인
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+
+        // jwt안의 정보를 이용하여 유저 조회
+        Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());;
+        Member requestMember = new Member();
+        if (memberInJwt.isPresent()) {
+            requestMember = memberInJwt.get();
+        }
+
         boolean isAuthor = false;
 
+
         // 로그인 상태라면 조회 요청한 유저와 게시물을 작성한 유저가 동일 유저인지 확인
-        if (token != null) {
-            Claims claims = jwtUtil.getUserInfoFromToken(token);
-            Optional<Member> requestMember = memberRepository.findByLoginId(claims.getSubject());
-            if (requestMember.isPresent()) {
-                if (requestMember.get().getMemberId().equals(member.getMemberId())) {
-                    isAuthor = true;
-                }
-            }
+        if (isLogin == true)
+            if (requestMember.getMemberId().equals(post.getMemberId())) {
+            isAuthor = true;
         }
 
         List<Comment> commentList = commentRepository.findAllByPost(post);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
-            commentResponseDtoList.add(new CommentResponseDto(comment));
+            // 요청한 사용자와 댓글 작성자가 같다면 isCommenter = true
+            boolean isCommenter = false;
+            if (isLogin == true) {
+                if (requestMember.getMemberId().equals(comment.getMember().getMemberId())) {
+                    isCommenter = true;
+                }
+            }
+            commentResponseDtoList.add(new CommentResponseDto(comment, isCommenter));
         }
 
         List<String> tags = new ArrayList<>();

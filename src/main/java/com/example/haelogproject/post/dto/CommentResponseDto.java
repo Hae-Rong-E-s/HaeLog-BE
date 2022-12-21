@@ -16,7 +16,7 @@ public class CommentResponseDto {
     private boolean myComment = true;
     private LocalDateTime createAt;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponseDto(Comment comment, boolean isMyService) {
         this.commentId = comment.getCommentId();
         this.commentContent = comment.getContent();
         this.commentMemberNickname = comment.getMember().getNickname();
