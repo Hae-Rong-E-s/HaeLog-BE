@@ -1,5 +1,6 @@
 package com.example.haelogproject.post.dto;
 
+import com.example.haelogproject.comment.dto.ResponseCommentDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,10 +22,10 @@ public class PostDetailResponseDto {
     private String postContent;
     private boolean isMyPost;
     private String contentSummary;
-    private List<CommentResponseDto> commentList = new ArrayList<>();
+    private List<ResponseCommentDto> commentList = new ArrayList<>();
 
     @Builder
-    public PostDetailResponseDto(Long postid, LocalDateTime createdAt, String title, List<String> tags, String postMemberNikname, String description, String postContent, boolean isMyPost, String contentSummary, List<CommentResponseDto> commentResponseDtoList) {
+    public PostDetailResponseDto(Long postid, LocalDateTime createdAt, String title, List<String> tags, String postMemberNikname, String description, String postContent, boolean isMyPost, String contentSummary, List<ResponseCommentDto> responseCommentDtoList) {
         this.postid = postid;
         this.createdAt = createdAt;
         this.title = title;
@@ -34,6 +35,6 @@ public class PostDetailResponseDto {
         this.postContent = postContent;
         this.isMyPost = isMyPost;
         this.contentSummary = contentSummary;
-        this.commentList = commentResponseDtoList;
+        this.commentList = responseCommentDtoList;
     }
 }

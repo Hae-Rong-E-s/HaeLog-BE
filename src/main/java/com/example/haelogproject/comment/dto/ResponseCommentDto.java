@@ -1,4 +1,4 @@
-package com.example.haelogproject.post.dto;
+package com.example.haelogproject.comment.dto;
 
 import com.example.haelogproject.comment.entity.Comment;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CommentResponseDto {
+public class ResponseCommentDto {
 
     private Long commentId;
     private String commentContent;
@@ -16,7 +16,7 @@ public class CommentResponseDto {
     private boolean myComment = true;
     private LocalDateTime createAt;
 
-    public CommentResponseDto(Comment comment, boolean isMyComment) {
+    public ResponseCommentDto(Comment comment, boolean isMyComment) {
         this.commentId = comment.getCommentId();
         this.commentContent = comment.getContent();
         this.commentMemberNickname = comment.getMember().getNickname();
