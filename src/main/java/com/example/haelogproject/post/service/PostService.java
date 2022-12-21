@@ -163,21 +163,25 @@ public class PostService {
         String token = jwtUtil.resolveToken(request, "Authorization");
         boolean isLogin = (token != null) ? true : false;
 
-        // jwt 내부 값 확인
-        Claims claims = jwtUtil.getUserInfoFromToken(token);
-
-        // jwt안의 정보를 이용하여 유저 조회
-        Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());;
         Member requestMember = new Member();
-        if (memberInJwt.isPresent()) {
-            requestMember = memberInJwt.get();
+        Claims claims = null;
+
+        // jwt 내부 값 확인
+        if (isLogin) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+
+            // jwt 안의 정보를 이용하여 유저 조회
+            Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());;
+            if (memberInJwt.isPresent()) {
+                requestMember = memberInJwt.get();
+            }
         }
 
+        // 요청한 맴버와 게시글의 작성자 일치 여부
         boolean isAuthor = false;
 
-
         // 로그인 상태라면 조회 요청한 유저와 게시물을 작성한 유저가 동일 유저인지 확인
-        if (isLogin == true)
+        if (isLogin)
             if (requestMember.getMemberId().equals(post.getMemberId())) {
             isAuthor = true;
         }
@@ -188,7 +192,7 @@ public class PostService {
         for (Comment comment : commentList) {
             // 요청한 사용자와 댓글 작성자가 같다면 isCommenter = true
             boolean isCommenter = false;
-            if (isLogin == true) {
+            if (isLogin) {
                 if (requestMember.getMemberId().equals(comment.getMember().getMemberId())) {
                     isCommenter = true;
                 }
