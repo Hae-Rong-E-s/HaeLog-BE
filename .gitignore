@@ -32,3 +32,4 @@ HELP.md
 .idea
 .DS_Store
 security.properties
+db.properties
