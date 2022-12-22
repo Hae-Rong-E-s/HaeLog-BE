@@ -3,15 +3,14 @@ package com.example.haelogproject.member.controller;
 import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.dto.RequestUserLogin;
 import com.example.haelogproject.member.dto.RequestUserSignup;
+import com.example.haelogproject.member.dto.ResponseMemberInfo;
 import com.example.haelogproject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -51,5 +50,12 @@ public class MemberController {
         ResponseDto responseDto = memberService.login(requestUserLogin, response);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 회원 정보 조회
+    @GetMapping("/info")
+    public ResponseEntity<ResponseDto> getMemberInfo(@RequestParam String nickname, HttpServletRequest request) {
+        ResponseMemberInfo response = memberService.getUserInfo(nickname, request);
+        return new ResponseEntity<>(new ResponseDto("success", "회원 정보 조회 성공", response), HttpStatus.OK);
     }
 }

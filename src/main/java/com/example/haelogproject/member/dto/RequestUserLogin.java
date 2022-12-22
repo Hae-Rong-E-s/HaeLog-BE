@@ -5,6 +5,5 @@ import lombok.Getter;
 @Getter
 public class RequestUserLogin {
     private String loginId;
-
     private String password;
 }
