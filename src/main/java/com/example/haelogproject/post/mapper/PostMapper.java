@@ -1,5 +1,6 @@
 package com.example.haelogproject.post.mapper;
 
+import com.example.haelogproject.comment.dto.ResponseCommentDto;
 import com.example.haelogproject.member.entity.Member;
 import com.example.haelogproject.post.dto.*;
 import com.example.haelogproject.post.entity.Post;
@@ -19,7 +20,7 @@ public class PostMapper {
                 .build();
     }
 
-    public PostDetailResponseDto toDetailDto(Post post, Member member, boolean isAuthor, List<String> tagList, List<CommentResponseDto> commentResponseDtoList) {
+    public PostDetailResponseDto toDetailDto(Post post, Member member, boolean isAuthor, List<String> tagList, List<ResponseCommentDto> responseCommentDtoList) {
         return PostDetailResponseDto.builder()
                 .postid(post.getPostId())
                 .createdAt(post.getCreatedAt())
@@ -30,7 +31,7 @@ public class PostMapper {
                 .description(member.getDescription())
                 .postContent(post.getContent())
                 .contentSummary(post.getContentSummary())
-                .commentResponseDtoList(commentResponseDtoList)
+                .responseCommentDtoList(responseCommentDtoList)
                 .build();
     }
 

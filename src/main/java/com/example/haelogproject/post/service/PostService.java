@@ -1,5 +1,6 @@
 package com.example.haelogproject.post.service;
 
+import com.example.haelogproject.comment.dto.ResponseCommentDto;
 import com.example.haelogproject.comment.entity.Comment;
 import com.example.haelogproject.comment.repository.CommentRepository;
 import com.example.haelogproject.common.jwt.JwtUtil;
@@ -190,7 +191,7 @@ public class PostService {
         }
 
         List<Comment> commentList = commentRepository.findAllByPost(post);
-        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+        List<ResponseCommentDto> responseCommentDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
             // 요청한 사용자와 댓글 작성자가 같다면 isCommenter = true
@@ -200,7 +201,7 @@ public class PostService {
                     isCommenter = true;
                 }
             }
-            commentResponseDtoList.add(new CommentResponseDto(comment, isCommenter));
+            responseCommentDtoList.add(new ResponseCommentDto(comment, isCommenter));
         }
 
         List<String> tags = new ArrayList<>();
@@ -213,7 +214,7 @@ public class PostService {
         }
 
         // 조회한 값들을 DTO로 변환 및 반환
-        return mapper.toDetailDto(post, member, isAuthor, tags, commentResponseDtoList);
+        return mapper.toDetailDto(post, member, isAuthor, tags, responseCommentDtoList);
     }
 
     // 유저의 모든 게시물 조회하기

@@ -1,6 +1,7 @@
 package com.example.haelogproject.comment.service;
 
 import com.example.haelogproject.comment.dto.RequestCommentDto;
+import com.example.haelogproject.comment.dto.ResponseCommentDto;
 import com.example.haelogproject.comment.entity.Comment;
 import com.example.haelogproject.comment.mapper.CommentMapper;
 import com.example.haelogproject.comment.repository.CommentRepository;
@@ -20,8 +21,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    public void writeComment(Long postId, RequestCommentDto requestCommentDto, Member member) {
-
+    public ResponseCommentDto writeComment(Long postId, RequestCommentDto requestCommentDto, Member member) {
         // 게시물 존재 여부 확인
         Post post = checkPost(postId);
         Comment comment = commentMapper.toComment(post, member, requestCommentDto);
@@ -30,6 +30,16 @@ public class CommentService {
         post.addComment(comment);
 
         commentRepository.save(comment);
+
+
+        // 댓글 작성자와 동일한지 상태 반환
+        boolean isCommenter = false;
+
+        if (member.getMemberId().equals(comment.getMember().getMemberId())) {
+            isCommenter = true;
+        }
+
+        return new ResponseCommentDto(comment, isCommenter);
     }
 
     @Transactional

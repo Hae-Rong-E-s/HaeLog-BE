@@ -1,6 +1,7 @@
 package com.example.haelogproject.comment.controller;
 
 import com.example.haelogproject.comment.dto.RequestCommentDto;
+import com.example.haelogproject.comment.dto.ResponseCommentDto;
 import com.example.haelogproject.comment.service.CommentService;
 import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.common.security.UserDetailsImpl;
@@ -24,8 +25,8 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        commentService.writeComment(postId, requestCommentDto, userDetails.getMember());
-        return new ResponseEntity<>(new ResponseDto<>("success", "댓글 작성에 성공하였습니다.", null), HttpStatus.OK);
+        ResponseCommentDto responseCommentDto = commentService.writeComment(postId, requestCommentDto, userDetails.getMember());
+        return new ResponseEntity<>(new ResponseDto<>("success", "댓글 작성에 성공하였습니다.", responseCommentDto), HttpStatus.OK);
     }
 
     @PutMapping("/{commentId}")
