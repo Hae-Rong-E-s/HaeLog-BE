@@ -5,11 +5,15 @@ import com.example.haelogproject.comment.entity.Comment;
 import com.example.haelogproject.comment.repository.CommentRepository;
 import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.member.entity.Member;
+import com.example.haelogproject.member.exception.custom.MemberNotFoundException;
 import com.example.haelogproject.member.repository.MemberRepository;
 import com.example.haelogproject.post.dto.*;
 import com.example.haelogproject.post.entity.Post;
 import com.example.haelogproject.post.entity.PostTag;
 import com.example.haelogproject.post.entity.Tag;
+import com.example.haelogproject.post.exception.custom.PostNotFoundException;
+import com.example.haelogproject.post.exception.custom.TagNotFoundException;
+import com.example.haelogproject.post.exception.custom.UnauthorizedPostException;
 import com.example.haelogproject.post.mapper.PostMapper;
 import com.example.haelogproject.post.repository.PostRepository;
 import com.example.haelogproject.post.repository.PostTagRepository;
@@ -79,12 +83,12 @@ public class PostService {
 
         // 기존에 저장된 게시물 불러오기
         Post post = postRepository.findById(postId).orElseThrow(
-                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+                PostNotFoundException::new
         );
 
         // 게시물의 작성자가 요청한 사용자와 일치하는지 확인
         if (!post.getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
+            throw new UnauthorizedPostException();
         }
 
         // 본문 내용 미리보기를 저장 할 필드
@@ -127,12 +131,12 @@ public class PostService {
     public void deletePost(Long postId, Member member) {
         // 기존에 저장된 게시물 불러오기
         Post post = postRepository.findById(postId).orElseThrow(
-                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+                PostNotFoundException::new
         );
 
         // 게시물의 작성자가 요청한 사용자와 일치하는지 확인 일치하지 않을 경우 예외 발생
         if (!post.getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
+            throw new UnauthorizedPostException();
         }
 
         // 태그(PostTag) 삭제
@@ -158,7 +162,7 @@ public class PostService {
     public PostDetailResponseDto getDetailPost(String nickname, Long postid, HttpServletRequest request) {
 
         Post post = postRepository.findById(postid).orElseThrow(
-                () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
+                PostNotFoundException::new
         );
         // 작성자 정보 가져오기
         Member member = memberRepository.findByMemberId(post.getMemberId());
@@ -175,7 +179,7 @@ public class PostService {
             claims = jwtUtil.getUserInfoFromToken(token);
 
             // jwt 안의 정보를 이용하여 유저 조회
-            Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());;
+            Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());
             if (memberInJwt.isPresent()) {
                 requestMember = memberInJwt.get();
             }
@@ -221,7 +225,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getUserPostList(String nickname) {
         Member author = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                MemberNotFoundException::new
         );
         List<Post> postList = postRepository.findAllByMemberId(author.getMemberId());
         List<PostSimpleResponseDto> response = new ArrayList<>();
@@ -243,11 +247,11 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostSimpleResponseDto> getUserPostListByTag(String nickname, String tagName) {
         Member author = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                MemberNotFoundException::new
         );
 
         Tag selectedTag = tagRepository.findByMemberAndTagName(author, tagName).orElseThrow(
-                () -> new IllegalArgumentException("해당 태그가 존재하지 않습니다.")
+                TagNotFoundException::new
         );
 
         List<PostTag> postTagList = postTagRepository.findAllByTag(selectedTag);
@@ -276,11 +280,11 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostInfoForUpdateDto getPostInfoForUpdate(Long postId, Member member) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("게시물이 존재하지 않습니다.")
+                PostNotFoundException::new
         );
 
         if (!post.getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException("게시물 수정 권한이 없습니다.");
+            throw new UnauthorizedPostException();
         }
 
         List<PostTag> postTags = postTagRepository.findAllByPost(post);

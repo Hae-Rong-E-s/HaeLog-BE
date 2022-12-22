@@ -59,4 +59,10 @@ public class MemberExceptionHandler {
     public ResponseEntity<ResponseDto> handleWrongPasswordException(WrongPasswordException e){
         return makeErrorResponseEntity(e.getExceptionMessage());
     }
+
+    //멤버 조회시 멤버가 없을 경우
+    @ExceptionHandler({MemberNotFoundException.class})
+    public ResponseEntity<ResponseDto> handleMemberNotFoundException(MemberNotFoundException e){
+        return makeErrorResponseEntity(e.getExceptionMessage());
+    }
 }
