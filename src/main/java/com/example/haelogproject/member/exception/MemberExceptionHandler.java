@@ -1,7 +1,7 @@
 package com.example.haelogproject.member.exception;
 
 import com.example.haelogproject.common.exception.ExceptionMessage;
-import com.example.haelogproject.member.dto.ResponseDto;
+import com.example.haelogproject.common.response.ResponseDto;
 import com.example.haelogproject.member.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

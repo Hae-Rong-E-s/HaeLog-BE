@@ -4,12 +4,10 @@ import com.example.haelogproject.common.jwt.JwtAuthFilter;
 import com.example.haelogproject.common.jwt.JwtUtil;
 import com.example.haelogproject.common.jwt.exception.JwtExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +29,6 @@ public class WebSecurityConfig {
     @Bean // 비밀번호 암호화
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().
-                requestMatchers(PathRequest.toH2Console()); // H2 콘솔 관련된 Path 예외 설정
     }
 
     @Bean
@@ -82,6 +74,9 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("http://localhost:3003");
         configuration.addAllowedOrigin("http://localhost:3004");
         configuration.addAllowedOrigin("http://localhost:3005");
+        configuration.addAllowedOrigin("https://hae-log-rdyyfm5ie-haelog-fe.vercel.app/");
+        configuration.addAllowedOrigin("https://hae-log-fe.vercel.app/");
+
         //나중에 프론트 서버 origin으로 변경해야함
 //            configuration.addAllowedOrigin("http://soribaddah.s3-website.ap-northeast-2.amazonaws.com");
         // 예비 요청 - 본 요청 프론트와의 트러블 슈팅 -> OPTIONS 추가
