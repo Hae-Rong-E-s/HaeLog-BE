@@ -50,7 +50,9 @@ public class WebSecurityConfig {
                 antMatchers("/api/member/signup/nickname").permitAll().
                 antMatchers("/api/{nickname}").permitAll().
                 antMatchers("/api/{nickname}/post").permitAll().
+                antMatchers("/api/post/{postId}").permitAll().
                 antMatchers("/api").permitAll().
+                antMatchers("/api/member/info").permitAll().
                 antMatchers("/").permitAll().
                 requestMatchers(CorsUtils::isPreFlightRequest).permitAll(). // pre-flight 요청 무시하기
                 anyRequest().authenticated();
@@ -77,8 +79,6 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("https://hae-log-rdyyfm5ie-haelog-fe.vercel.app/");
         configuration.addAllowedOrigin("https://hae-log-fe.vercel.app/");
 
-        //나중에 프론트 서버 origin으로 변경해야함
-//            configuration.addAllowedOrigin("http://soribaddah.s3-website.ap-northeast-2.amazonaws.com");
         // 예비 요청 - 본 요청 프론트와의 트러블 슈팅 -> OPTIONS 추가
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "OPTIONS", "PUT")); // 허용할 Http Method
         configuration.addAllowedHeader("*");
