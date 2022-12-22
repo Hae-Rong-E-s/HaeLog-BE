@@ -69,8 +69,8 @@ public class PostController {
 
     // 게시물 수정 페이지에 필요한 정보 조회
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ResponseDto> getPostInfoForUpdate(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostInfoForUpdateDto response = postService.getPostInfoForUpdate(postId, userDetails.getMember());
+    public ResponseEntity<ResponseDto> getPostInfoForUpdate(@PathVariable Long postId, HttpServletRequest request) {
+        PostInfoForUpdateDto response = postService.getPostInfoForUpdate(postId, request);
         return new ResponseEntity(new ResponseDto("success", "게시물 수정에 필요한 정보를 반환했습니다.", response), HttpStatus.OK);
     }
 }

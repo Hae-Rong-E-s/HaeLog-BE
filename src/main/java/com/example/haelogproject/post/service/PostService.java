@@ -278,13 +278,30 @@ public class PostService {
 
     // 게시물 수정 페이지에 필요한 정보 조회
     @Transactional(readOnly = true)
-    public PostInfoForUpdateDto getPostInfoForUpdate(Long postId, Member member) {
+    public PostInfoForUpdateDto getPostInfoForUpdate(Long postId, HttpServletRequest request) {
+
         Post post = postRepository.findById(postId).orElseThrow(
                 PostNotFoundException::new
         );
+        // 작성자 정보 가져오기
+        Member member = memberRepository.findByMemberId(post.getMemberId());
 
-        if (!post.getMemberId().equals(member.getMemberId())) {
-            throw new UnauthorizedPostException();
+        // 로그인 상태 확인
+        String token = jwtUtil.resolveToken(request, "authorization");
+        boolean isLogin = (token != null) ? true : false;
+
+        Member requestMember = new Member();
+        Claims claims = null;
+
+        // jwt 내부 값 확인
+        if (isLogin) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+
+            // jwt 안의 정보를 이용하여 유저 조회
+            Optional<Member> memberInJwt = memberRepository.findByLoginId(claims.getSubject());
+            if (memberInJwt.isPresent()) {
+                requestMember = memberInJwt.get();
+            }
         }
 
         List<PostTag> postTags = postTagRepository.findAllByPost(post);
